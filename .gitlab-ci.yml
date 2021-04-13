@@ -1,0 +1,29 @@
+image: ${DOCKER_DOTNET_SDK_IMAGE}
+
+variables:
+  PROJECT_FOLDER: MyYamlParser
+  PROJECT_TEST_FOLDER: MyYamlParser.Tests
+
+stages:
+  - test
+  - publish
+
+test:
+  stage: test
+  script:
+    - cd ${PROJECT_TEST_FOLDER}
+    - dotnet test
+  only:
+    - master
+
+publish:
+  stage: publish
+  script:
+    - cd ${PROJECT_FOLDER}
+    - projectfile=${PROJECT_FOLDER}
+    - ver=$(cat $projectfile.csproj | grep '<Version>' | awk -F ">" '{print $2}' | awk -F"<" '{print $1}')
+    - echo $ver
+    - dotnet pack $projectfile.csproj --configuration Release --output ./out-nuget
+    - dotnet nuget push ./out-nuget/$projectfile.$ver.nupkg --api-key ${NUGET_PUBLISH_KEY} --source https://api.nuget.org/v3/index.json
+  only:
+    - master
