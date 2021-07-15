@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using NUnit.Framework;
 
@@ -16,6 +17,7 @@ namespace MyYamlParser.Tests
                            "  MyDataValue2:2\n\n" +
                            "field2:asd\n" +
                            "MyBool: True\n" +
+                           "TimeSpanField: 00:00:20\n"+
                            "EnumField: Two\n"+
                            "MyArray:\n" +
                            "  - value1\n" +
@@ -28,6 +30,8 @@ namespace MyYamlParser.Tests
             Assert.AreEqual(2, model.Version);
             Assert.AreEqual("value", model.Field.MyDataValue);
             Assert.AreEqual(2, model.Field.MyDataValue2);
+            
+            Assert.AreEqual(TimeSpan.Parse("00:00:20"), model.TimeSpanField);
             
             Assert.AreEqual(2, model.MyArray.Length);
             Assert.AreEqual("value1", model.MyArray[0]);
@@ -66,6 +70,9 @@ namespace MyYamlParser.Tests
         
         [YamlProperty]
         public MyEnum EnumField { get; set; }
+        
+        [YamlProperty]
+        public TimeSpan TimeSpanField { get; set; }
 
         public string ReadOnlyField => null;
 

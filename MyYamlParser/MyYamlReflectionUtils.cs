@@ -25,6 +25,7 @@ namespace MyYamlParser
             [typeof(short)] = typeof(short),
             [typeof(ushort)] = typeof(ushort),
             [typeof(DateTime)] = typeof(DateTime),
+            [typeof(TimeSpan)] = typeof(TimeSpan),
             [typeof(bool)] = typeof(bool),
         };
         
@@ -84,6 +85,9 @@ namespace MyYamlParser
 
             if (toType == typeof(string))
                 return value;
+            
+            if (toType == typeof(TimeSpan))
+                return TimeSpan.Parse(value);
 
             if (toType.IsEnum)
                 return Enum.Parse(toType, value);
